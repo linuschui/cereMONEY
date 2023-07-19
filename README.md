@@ -1,6 +1,6 @@
 # money_manager
 
-A new Flutter project.
+the best money manager mobile application to save up for your lambo
 
 ## Getting Started
 
