@@ -1,4 +1,4 @@
-# money_manager
+# cereMONEY
 
 the best money manager mobile application to save up for your lambo
 
