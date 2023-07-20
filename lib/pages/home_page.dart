@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:money_manager/components/expense_summary.dart';
 import 'package:money_manager/data/expense_data.dart';
+import 'package:money_manager/pages/addExpense.dart';
 import 'package:money_manager/pages/analytics.dart';
 import 'package:money_manager/pages/history.dart';
 import 'package:provider/provider.dart';
@@ -29,91 +31,28 @@ class _HomePageState extends State<HomePage> {
     Provider.of<ExpenseData>(context, listen: false).prepareData();
   }
 
-  void addNewExpense() {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              title: const Text('Add new expense'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: newExpenseNameController,
-                    decoration: const InputDecoration(
-                      hintText: "Expense Name",
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                          RegExp(r'^[a-zA-Z0-9 ]+$'))
-                    ],
-                  ),
-                  Row(children: [
-                    Expanded(
-                      child: TextField(
-                        controller: newExpenseDollarsController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(hintText: "Dollars"),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                          LengthLimitingTextInputFormatter(5)
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                        child: TextField(
-                      controller: newExpenseCentsController,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(hintText: "Cents"),
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(2)
-                      ],
-                    )),
-                  ])
-                ],
-              ),
-              actions: [
-                MaterialButton(onPressed: save, child: const Text('Save')),
-                MaterialButton(onPressed: cancel, child: const Text('Cancel')),
-              ],
-            ));
-  }
-
-  void save() {
-    if (newExpenseNameController.text.isNotEmpty &&
-        newExpenseDollarsController.text.isNotEmpty &&
-        newExpenseCentsController.text.isNotEmpty) {
-      String amount =
-          '${newExpenseDollarsController.text}.${newExpenseCentsController.text}';
-      double amountPrecision = double.parse(amount);
-      String finalAmount = amountPrecision.toStringAsFixed(2);
-      ExpenseItem newExpense = ExpenseItem(
-          name: newExpenseNameController.text,
-          amount: finalAmount,
-          dateTime: DateTime.now());
-      Provider.of<ExpenseData>(context, listen: false)
-          .addNewExpense(newExpense);
-      Navigator.pop(context);
-      clear();
-    }
-  }
-
-  void cancel() {
-    Navigator.pop(context);
-    setState(() {
-      _selectedIndex = 0;
-    });
-    clear();
-  }
-
-  void clear() {
-    newExpenseNameController.clear();
-    newExpenseDollarsController.clear();
-    newExpenseCentsController.clear();
-  }
-
   void deleteExpense(ExpenseItem expense) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+          content: Center(
+            child: Text('DELETING',
+                style: TextStyle(
+                    color: Color.fromARGB(255, 247, 0, 255),
+                    fontWeight: FontWeight.bold)),
+          ),
+          backgroundColor: Colors.black),
+    );
     Provider.of<ExpenseData>(context, listen: false).deleteExpense(expense);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+          content: Center(
+            child: Text('SUCCESSFULLY DELETED',
+                style: TextStyle(
+                    color: Color.fromARGB(255, 247, 0, 255),
+                    fontWeight: FontWeight.bold)),
+          ),
+          backgroundColor: Colors.black),
+    );
   }
 
   int _selectedIndex = 0;
@@ -129,15 +68,19 @@ class _HomePageState extends State<HomePage> {
       // Navigate to the HistoryPage with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(HistoryPage()),
+        pageTransitionBuilder(const HistoryPage()),
+      );
+    } else if (index == 2) {
+      // Add new expense : do nothing, already handled by navbar
+      Navigator.push(
+        context,
+        pageTransitionBuilder(const AnalyticsPage()),
       );
     } else if (index == 3) {
-      // Add new expense : do nothing, already handled by navbar
-    } else if (index == 2) {
       // Navigate to the Analytics with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(AnalyticsPage()),
+        pageTransitionBuilder(const AddExpensePage()),
       );
     }
   }
@@ -193,7 +136,16 @@ class _HomePageState extends State<HomePage> {
             // expense summary
             ExpenseSummary(startOfWeek: value.startOfWeekDate()),
             // expense list
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
+            const Padding(
+                padding: EdgeInsets.all(15.0),
+                child:
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text('EXPENSES',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 247, 0, 255))),
+                ])),
             Expanded(
               // Use Expanded to make the ListView.builder scrollable independently
               child: ListView.builder(
@@ -208,6 +160,24 @@ class _HomePageState extends State<HomePage> {
                   deleteTapped: (p0) =>
                       deleteExpense(value.getAllExpenseList()[index]),
                 ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    DateFormat('EEEE, d MMMM yyyy')
+                        .format(DateTime.now())
+                        .toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      color: Color.fromARGB(255, 247, 0, 255),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
@@ -227,29 +197,29 @@ class _HomePageState extends State<HomePage> {
               tabs: [
                 GButton(
                   icon: Icons.home,
-                  text: ' Home',
+                  text: ' HOME',
                   backgroundColor: _selectedIndex == 0
                       ? Colors.grey.shade800 // Use grey when selected
                       : Colors.transparent,
                 ),
                 GButton(
                   icon: Icons.history_sharp,
-                  text: ' History',
+                  text: ' HISTORY',
                   backgroundColor: _selectedIndex == 1
                       ? Colors.grey.shade800 // Use grey when selected
                       : Colors.transparent,
                 ),
                 GButton(
                   icon: Icons.analytics,
-                  text: ' Analytics',
+                  text: ' ANALYTICS',
                   backgroundColor: _selectedIndex == 2
                       ? Colors.grey.shade800 // Use grey when selected
                       : Colors.transparent,
                 ),
                 GButton(
                   icon: Icons.add,
-                  text: ' Expense',
-                  onPressed: addNewExpense,
+                  text: ' ADD',
+                  // onPressed: addNewExpense,
                   backgroundColor: _selectedIndex == 3
                       ? Colors.grey.shade800 // Use grey when selected
                       : Colors.transparent,

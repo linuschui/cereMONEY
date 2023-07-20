@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:money_manager/pages/addExpense.dart';
 import 'package:money_manager/pages/analytics.dart';
 import 'package:money_manager/pages/home_page.dart';
 
@@ -31,6 +32,12 @@ class _HistoryPageState extends State<HistoryPage> {
       Navigator.push(
         context,
         pageTransitionBuilder(AnalyticsPage()),
+      );
+    } else if (index == 3) {
+      // Navigate to the AddExpense Page with a smooth slide transition
+      Navigator.push(
+        context,
+        pageTransitionBuilder(AddExpensePage()),
       );
     }
   }
@@ -92,22 +99,29 @@ class _HistoryPageState extends State<HistoryPage> {
             tabs: [
               GButton(
                 icon: Icons.home,
-                text: ' Home',
+                text: ' HOME',
                 backgroundColor: _selectedIndex == 0
                     ? Colors.grey.shade800 // Use grey when selected
                     : Colors.transparent, // Use transparent when not selected
               ),
               GButton(
                 icon: Icons.history_outlined,
-                text: ' History',
+                text: ' HISTORY',
                 backgroundColor: _selectedIndex == 1
                     ? Colors.grey.shade800 // Use grey when selected
                     : Colors.transparent, // Use transparent when not selected
               ),
               GButton(
                 icon: Icons.analytics,
-                text: ' Analytics',
+                text: ' ANALYTICS',
                 backgroundColor: _selectedIndex == 2
+                    ? Colors.grey.shade800 // Use grey when selected
+                    : Colors.transparent, // Use transparent when not selected
+              ),
+              GButton(
+                icon: Icons.add,
+                text: ' ADD',
+                backgroundColor: _selectedIndex == 3
                     ? Colors.grey.shade800 // Use grey when selected
                     : Colors.transparent, // Use transparent when not selected
               ),

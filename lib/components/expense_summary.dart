@@ -3,6 +3,7 @@ import 'package:money_manager/bar_graph/bar_graph.dart';
 import 'package:money_manager/data/expense_data.dart';
 import 'package:money_manager/datetime/datetime_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class ExpenseSummary extends StatelessWidget {
   final DateTime startOfWeek;
@@ -80,16 +81,16 @@ class ExpenseSummary extends StatelessWidget {
     return Consumer<ExpenseData>(
         builder: (context, value, child) => Column(children: [
               Padding(
-                  padding: const EdgeInsets.all(25.0),
+                  padding: const EdgeInsets.all(15.0),
                   child: Row(children: [
-                    const Text('WEEKLY TOTAL  ',
+                    const Text('THIS WEEK ',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Color.fromARGB(255, 247, 0, 255))),
                     Text(
                         '\$${calculateWeekTotal(value, sunday, monday, tuesday, wednesday, thursday, friday, saturday)}',
                         style:
-                            TextStyle(color: Color.fromARGB(255, 247, 0, 255)))
+                            TextStyle(color: Color.fromARGB(255, 247, 0, 255))),
                   ])),
               SizedBox(
                 height: 200,

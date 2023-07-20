@@ -43,9 +43,12 @@ class ExpenseTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Slidable(
-        endActionPane: ActionPane(motion: const StretchMotion(), children: [
-          SlidableAction(onPressed: deleteTapped, icon: Icons.delete),
-        ]),
+        endActionPane: ActionPane(
+            extentRatio: 0.2,
+            motion: const StretchMotion(),
+            children: [
+              SlidableAction(onPressed: deleteTapped, icon: Icons.delete),
+            ]),
         child: ListTile(
           textColor: Colors.white,
           title: Text(name),
