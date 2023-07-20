@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:money_manager/components/expense_summary.dart';
 import 'package:money_manager/data/expense_data.dart';
+import 'package:money_manager/pages/history.dart';
 import 'package:provider/provider.dart';
 
 import '../components/expense_tile.dart';
@@ -111,13 +112,16 @@ class _HomePageState extends State<HomePage> {
     Provider.of<ExpenseData>(context, listen: false).deleteExpense(expense);
   }
 
+  int _selectedIndex = 0;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ExpenseData>(
       builder: (context, value, child) => Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.black,
-          toolbarHeight: 30,
+          toolbarHeight: 60,
           title: Row(
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -166,19 +170,57 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: Colors.black,
               color: Colors.white,
               activeColor: Colors.white,
-              tabBackgroundColor: Colors.grey.shade800,
               gap: 8,
               padding: const EdgeInsets.all(16),
               tabs: [
-                const GButton(icon: Icons.home, text: ' Home'),
-                const GButton(icon: Icons.history_outlined, text: ' History'),
+                GButton(
+                  icon: Icons.home,
+                  text: ' Home',
+                  backgroundColor: _selectedIndex == 0
+                      ? Colors.grey.shade800 // Use grey when selected
+                      : Colors.transparent,
+                ),
+                GButton(
+                  icon: Icons.history_outlined,
+                  text: ' History',
+                  backgroundColor: _selectedIndex == 0
+                      ? Colors.grey.shade800 // Use grey when selected
+                      : Colors.transparent,
+                ),
                 GButton(
                   icon: Icons.add,
                   text: ' Expense',
                   onPressed: addNewExpense,
+                  backgroundColor: _selectedIndex == 0
+                      ? Colors.grey.shade800 // Use grey when selected
+                      : Colors.transparent,
                 ),
-                const GButton(icon: Icons.settings, text: ' Settings')
+                GButton(
+                  icon: Icons.settings,
+                  text: ' Settings',
+                  backgroundColor: _selectedIndex == 0
+                      ? Colors.grey.shade800 // Use grey when selected
+                      : Colors.transparent,
+                )
               ],
+              selectedIndex: _selectedIndex,
+              onTabChange: (index) {
+                // Use setState to update the _selectedIndex and trigger a rebuild
+                setState(() {
+                  _selectedIndex = index;
+                });
+                // Navigate to the corresponding page when a button is pressed
+                if (index == 1) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          HistoryPage(), // Navigate to the HistoryPage
+                    ),
+                  );
+                }
+                // Add navigation for other buttons if needed
+              },
             ),
           ),
         ),
