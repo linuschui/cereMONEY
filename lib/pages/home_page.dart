@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:money_manager/components/expense_summary.dart';
 import 'package:money_manager/data/expense_data.dart';
+import 'package:money_manager/pages/analytics.dart';
 import 'package:money_manager/pages/history.dart';
 import 'package:provider/provider.dart';
 
@@ -99,6 +100,9 @@ class _HomePageState extends State<HomePage> {
 
   void cancel() {
     Navigator.pop(context);
+    setState(() {
+      _selectedIndex = 0;
+    });
     clear();
   }
 
@@ -114,6 +118,51 @@ class _HomePageState extends State<HomePage> {
 
   int _selectedIndex = 0;
 
+  void _onTabChange(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    if (index == 0) {
+      // Do nothing, already on the Home page.
+    } else if (index == 1) {
+      // Navigate to the HistoryPage with a smooth slide transition
+      Navigator.push(
+        context,
+        pageTransitionBuilder(HistoryPage()),
+      );
+    } else if (index == 3) {
+      // Add new expense : do nothing, already handled by navbar
+    } else if (index == 2) {
+      // Navigate to the Analytics with a smooth slide transition
+      Navigator.push(
+        context,
+        pageTransitionBuilder(AnalyticsPage()),
+      );
+    }
+  }
+
+  PageRouteBuilder pageTransitionBuilder(Widget page) {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1.0, 0.0);
+        const end = Offset.zero;
+        const curve = Curves.easeInOut;
+
+        var tween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+        var offsetAnimation = animation.drive(tween);
+
+        return SlideTransition(
+          position: offsetAnimation,
+          child: child,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ExpenseData>(
@@ -125,9 +174,11 @@ class _HomePageState extends State<HomePage> {
           title: Row(
             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('cereMONEY'),
+              const Text('CEREMONEY'),
               IconButton(
-                icon: Icon(Icons.monetization_on), // Add your desired icon here
+                icon: const Icon(
+                  Icons.monetization_on,
+                ),
                 onPressed: () {
                   // Add the onPressed action here, e.g., open a drawer
                 },
@@ -168,6 +219,7 @@ class _HomePageState extends State<HomePage> {
                 const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
             child: GNav(
               backgroundColor: Colors.black,
+              // tabBackgroundColor: Colors.grey,
               color: Colors.white,
               activeColor: Colors.white,
               gap: 8,
@@ -181,9 +233,16 @@ class _HomePageState extends State<HomePage> {
                       : Colors.transparent,
                 ),
                 GButton(
-                  icon: Icons.history_outlined,
+                  icon: Icons.history_sharp,
                   text: ' History',
-                  backgroundColor: _selectedIndex == 0
+                  backgroundColor: _selectedIndex == 1
+                      ? Colors.grey.shade800 // Use grey when selected
+                      : Colors.transparent,
+                ),
+                GButton(
+                  icon: Icons.analytics,
+                  text: ' Analytics',
+                  backgroundColor: _selectedIndex == 2
                       ? Colors.grey.shade800 // Use grey when selected
                       : Colors.transparent,
                 ),
@@ -191,36 +250,13 @@ class _HomePageState extends State<HomePage> {
                   icon: Icons.add,
                   text: ' Expense',
                   onPressed: addNewExpense,
-                  backgroundColor: _selectedIndex == 0
-                      ? Colors.grey.shade800 // Use grey when selected
-                      : Colors.transparent,
-                ),
-                GButton(
-                  icon: Icons.settings,
-                  text: ' Settings',
-                  backgroundColor: _selectedIndex == 0
+                  backgroundColor: _selectedIndex == 3
                       ? Colors.grey.shade800 // Use grey when selected
                       : Colors.transparent,
                 )
               ],
               selectedIndex: _selectedIndex,
-              onTabChange: (index) {
-                // Use setState to update the _selectedIndex and trigger a rebuild
-                setState(() {
-                  _selectedIndex = index;
-                });
-                // Navigate to the corresponding page when a button is pressed
-                if (index == 1) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          HistoryPage(), // Navigate to the HistoryPage
-                    ),
-                  );
-                }
-                // Add navigation for other buttons if needed
-              },
+              onTabChange: _onTabChange,
             ),
           ),
         ),

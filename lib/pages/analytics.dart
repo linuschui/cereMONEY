@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:money_manager/pages/analytics.dart';
+import 'package:money_manager/pages/history.dart';
 import 'package:money_manager/pages/home_page.dart';
 
-class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+class AnalyticsPage extends StatefulWidget {
+  const AnalyticsPage({Key? key}) : super(key: key);
 
   @override
-  _HistoryPageState createState() => _HistoryPageState();
+  _AnalyticsPage createState() => _AnalyticsPage();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
-  int _selectedIndex = 1;
+class _AnalyticsPage extends State<AnalyticsPage> {
+  int _selectedIndex = 2;
 
   void _onTabChange(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    // setState(() {
+    //   _selectedIndex = index;
+    // });
 
     if (index == 0) {
       // Navigate to the Home with a smooth slide transition
@@ -25,13 +26,13 @@ class _HistoryPageState extends State<HistoryPage> {
         pageTransitionBuilder(HomePage()),
       );
     } else if (index == 1) {
-      // Do nothing, already on the History page.
-    } else if (index == 2) {
-      // Navigate to the Analytics with a smooth slide transition
+      // Navigate to the HistoryPage with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(AnalyticsPage()),
+        pageTransitionBuilder(HistoryPage()),
       );
+    } else if (index == 2) {
+      // Do nothing, already on the Analytics page.
     }
   }
 
@@ -76,7 +77,7 @@ class _HistoryPageState extends State<HistoryPage> {
         ),
       ),
       body: const Center(
-        child: Text('This is the HistoryPage'),
+        child: Text('This is the AnalyticsPage'),
       ),
       bottomNavigationBar: Container(
         color: Colors.black,
