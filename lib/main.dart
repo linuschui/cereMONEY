@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   await Hive.initFlutter();
-  await Hive.openBox("cereMONEY_database");
+  await Hive.openBox("cereMONEY_database_v2");
   runApp(const MyApp());
 }
 

@@ -88,18 +88,4 @@ class ExpenseData extends ChangeNotifier {
     }
     return dailyExpenseSummary;
   }
-
-  // get max of the week
-  double getMaximumExpenditure(DateTime startOfWeek) {
-    double currMax = 0;
-    for (int i = 0; i < 7; i++) {
-      String currDate =
-          convertDateTimeToString(startOfWeek.add(Duration(days: i)));
-      double currDateExpense = calculateDailyExpenseSummary()[currDate] ?? 0;
-      if (currDateExpense > currMax) {
-        currMax = currDateExpense;
-      }
-    }
-    return currMax;
-  }
 }

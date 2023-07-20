@@ -35,9 +35,11 @@ class MyBarGraph extends StatelessWidget {
       fridayAmount: fridayAmount,
       saturdayAmount: saturdayAmount,
     );
+
     myBarData.initialiseBarData();
+
     return BarChart(BarChartData(
-      maxY: 100,
+      maxY: maxY,
       minY: 0,
       gridData: FlGridData(show: false),
       borderData: FlBorderData(show: false),

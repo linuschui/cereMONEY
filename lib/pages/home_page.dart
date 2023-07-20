@@ -62,15 +62,20 @@ class _HomePageState extends State<HomePage> {
   }
 
   void save() {
-    String amount =
-        '${newExpenseDollarsController.text}.${newExpenseCentsController.text}';
-    ExpenseItem newExpense = ExpenseItem(
-        name: newExpenseNameController.text,
-        amount: amount,
-        dateTime: DateTime.now());
-    Provider.of<ExpenseData>(context, listen: false).addNewExpense(newExpense);
-    Navigator.pop(context);
-    clear();
+    if (newExpenseNameController.text.isNotEmpty &&
+        newExpenseDollarsController.text.isNotEmpty &&
+        newExpenseCentsController.text.isNotEmpty) {
+      String amount =
+          '${newExpenseDollarsController.text}.${newExpenseCentsController.text}';
+      ExpenseItem newExpense = ExpenseItem(
+          name: newExpenseNameController.text,
+          amount: amount,
+          dateTime: DateTime.now());
+      Provider.of<ExpenseData>(context, listen: false)
+          .addNewExpense(newExpense);
+      Navigator.pop(context);
+      clear();
+    }
   }
 
   void cancel() {
@@ -82,6 +87,10 @@ class _HomePageState extends State<HomePage> {
     newExpenseNameController.clear();
     newExpenseDollarsController.clear();
     newExpenseCentsController.clear();
+  }
+
+  void deleteExpense(ExpenseItem expense) {
+    Provider.of<ExpenseData>(context, listen: false).deleteExpense(expense);
   }
 
   @override
@@ -105,6 +114,8 @@ class _HomePageState extends State<HomePage> {
               name: value.getAllExpenseList()[index].name,
               amount: value.getAllExpenseList()[index].amount,
               dateTime: value.getAllExpenseList()[index].dateTime,
+              deleteTapped: (p0) =>
+                  deleteExpense(value.getAllExpenseList()[index]),
             ),
           ),
         ]),
