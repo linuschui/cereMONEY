@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:money_manager/components/expense_summary.dart';
 import 'package:money_manager/data/expense_data.dart';
 import 'package:provider/provider.dart';
@@ -35,7 +37,13 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   TextField(
                     controller: newExpenseNameController,
-                    decoration: const InputDecoration(hintText: "Expense Name"),
+                    decoration: const InputDecoration(
+                      hintText: "Expense Name",
+                    ),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                          RegExp(r'^[a-zA-Z0-9 ]+$'))
+                    ],
                   ),
                   Row(children: [
                     Expanded(
@@ -43,6 +51,10 @@ class _HomePageState extends State<HomePage> {
                         controller: newExpenseDollarsController,
                         keyboardType: TextInputType.number,
                         decoration: const InputDecoration(hintText: "Dollars"),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          LengthLimitingTextInputFormatter(5)
+                        ],
                       ),
                     ),
                     Expanded(
@@ -50,6 +62,10 @@ class _HomePageState extends State<HomePage> {
                       controller: newExpenseCentsController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(hintText: "Cents"),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(2)
+                      ],
                     )),
                   ])
                 ],
@@ -67,9 +83,11 @@ class _HomePageState extends State<HomePage> {
         newExpenseCentsController.text.isNotEmpty) {
       String amount =
           '${newExpenseDollarsController.text}.${newExpenseCentsController.text}';
+      double amountPrecision = double.parse(amount);
+      String finalAmount = amountPrecision.toStringAsFixed(2);
       ExpenseItem newExpense = ExpenseItem(
           name: newExpenseNameController.text,
-          amount: amount,
+          amount: finalAmount,
           dateTime: DateTime.now());
       Provider.of<ExpenseData>(context, listen: false)
           .addNewExpense(newExpense);
@@ -97,28 +115,73 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Consumer<ExpenseData>(
       builder: (context, value, child) => Scaffold(
-        backgroundColor: Colors.grey[300],
-        floatingActionButton: FloatingActionButton(
-          onPressed: addNewExpense,
-          child: const Icon(Icons.add),
+        appBar: AppBar(
+          backgroundColor: Colors.black,
+          toolbarHeight: 30,
+          title: Row(
+            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('cereMONEY'),
+              IconButton(
+                icon: Icon(Icons.monetization_on), // Add your desired icon here
+                onPressed: () {
+                  // Add the onPressed action here, e.g., open a drawer
+                },
+              ),
+            ],
+          ),
         ),
-        body: ListView(children: [
-          // expense summary
-          ExpenseSummary(startOfWeek: value.startOfWeekDate()),
-          // expense list
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: value.getAllExpenseList().length,
-            itemBuilder: (context, index) => ExpenseTile(
-              name: value.getAllExpenseList()[index].name,
-              amount: value.getAllExpenseList()[index].amount,
-              dateTime: value.getAllExpenseList()[index].dateTime,
-              deleteTapped: (p0) =>
-                  deleteExpense(value.getAllExpenseList()[index]),
+        backgroundColor: Colors.black,
+        body: Column(
+          // Wrap the ExpenseSummary and ListView.builder in a Column
+          children: [
+            // expense summary
+            ExpenseSummary(startOfWeek: value.startOfWeekDate()),
+            // expense list
+            const SizedBox(height: 20),
+            Expanded(
+              // Use Expanded to make the ListView.builder scrollable independently
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics:
+                    const AlwaysScrollableScrollPhysics(), // Use AlwaysScrollableScrollPhysics for the ListView.builder
+                itemCount: value.getAllExpenseList().length,
+                itemBuilder: (context, index) => ExpenseTile(
+                  name: value.getAllExpenseList()[index].name,
+                  amount: value.getAllExpenseList()[index].amount,
+                  dateTime: value.getAllExpenseList()[index].dateTime,
+                  deleteTapped: (p0) =>
+                      deleteExpense(value.getAllExpenseList()[index]),
+                ),
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: Container(
+          color: Colors.black,
+          child: Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+            child: GNav(
+              backgroundColor: Colors.black,
+              color: Colors.white,
+              activeColor: Colors.white,
+              tabBackgroundColor: Colors.grey.shade800,
+              gap: 8,
+              padding: const EdgeInsets.all(16),
+              tabs: [
+                const GButton(icon: Icons.home, text: ' Home'),
+                const GButton(icon: Icons.history_outlined, text: ' History'),
+                GButton(
+                  icon: Icons.add,
+                  text: ' Expense',
+                  onPressed: addNewExpense,
+                ),
+                const GButton(icon: Icons.settings, text: ' Settings')
+              ],
             ),
           ),
-        ]),
+        ),
       ),
     );
   }
