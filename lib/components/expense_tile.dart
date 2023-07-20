@@ -50,7 +50,7 @@ class ExpenseTile extends StatelessWidget {
               SlidableAction(onPressed: deleteTapped, icon: Icons.delete),
             ]),
         child: ListTile(
-          textColor: Colors.white,
+          textColor: double.parse(amount) < 100 ? Colors.white : Colors.red,
           title: Text(name),
           subtitle: Text(dateTimeFormatter(dateTime)),
           trailing: Text('\$$amount'),

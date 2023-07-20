@@ -217,7 +217,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
                       decoration: const InputDecoration(
                         labelText: "TYPE OF EXPENSE",
                         labelStyle: TextStyle(color: Colors.white),
-                        prefixIcon: Icon(Icons.money, color: Colors.white),
+                        prefixIcon: Icon(Icons.add_shopping_cart_rounded,
+                            color: Colors.white),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                               color: Colors

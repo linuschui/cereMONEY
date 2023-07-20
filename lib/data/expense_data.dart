@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:money_manager/data/hive_database.dart';
 import 'package:money_manager/datetime/datetime_helper.dart';
 import 'package:money_manager/models/expense_item.dart';
@@ -89,5 +90,28 @@ class ExpenseData extends ChangeNotifier {
       }
     }
     return dailyExpenseSummary;
+  }
+
+  // convert to history summary
+  // ['CATEGORY', 'JULY 2023', '\$2000']
+  Map<String, double> calculateHistoryExpenseSummary() {
+    Map<String, double> monthlyExpenseSummary = {};
+    for (var expense in overallExpenseList) {
+      String monthYear = DateFormat('MMMM yyyy').format(expense.dateTime);
+      double amount = double.parse(expense.amount);
+      String amountPrecision = amount.toStringAsFixed(2);
+      double finalAmount = double.parse(amountPrecision);
+      // if date already exists
+      if (monthlyExpenseSummary.containsKey(monthYear)) {
+        // get expense
+        double currentAmount = monthlyExpenseSummary[monthYear]!;
+        currentAmount += finalAmount;
+        monthlyExpenseSummary[monthYear] = currentAmount;
+        // does not exist
+      } else {
+        monthlyExpenseSummary.addAll({monthYear: finalAmount});
+      }
+    }
+    return monthlyExpenseSummary;
   }
 }

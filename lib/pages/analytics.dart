@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:money_manager/data/expense_data.dart';
 import 'package:money_manager/pages/addExpense.dart';
 import 'package:money_manager/pages/history.dart';
 import 'package:money_manager/pages/home_page.dart';
+import 'package:provider/provider.dart';
 
 class AnalyticsPage extends StatefulWidget {
   const AnalyticsPage({Key? key}) : super(key: key);
@@ -12,6 +14,13 @@ class AnalyticsPage extends StatefulWidget {
 }
 
 class _AnalyticsPage extends State<AnalyticsPage> {
+  @override
+  void initState() {
+    super.initState();
+    // prepare data on startup
+    Provider.of<ExpenseData>(context, listen: false).prepareData();
+  }
+
   int _selectedIndex = 2;
 
   void _onTabChange(int index) {
