@@ -43,7 +43,6 @@ class ExpenseSummary extends StatelessWidget {
       String thursday,
       String friday,
       String saturday) {
-    double? max = 100;
     List<double> values = [
       value.calculateDailyExpenseSummary()[sunday] ?? 0,
       value.calculateDailyExpenseSummary()[monday] ?? 0,
@@ -84,9 +83,13 @@ class ExpenseSummary extends StatelessWidget {
                   padding: const EdgeInsets.all(25.0),
                   child: Row(children: [
                     const Text('WEEKLY TOTAL  ',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Color.fromARGB(255, 247, 0, 255))),
                     Text(
-                        '\$${calculateWeekTotal(value, sunday, monday, tuesday, wednesday, thursday, friday, saturday)}')
+                        '\$${calculateWeekTotal(value, sunday, monday, tuesday, wednesday, thursday, friday, saturday)}',
+                        style:
+                            TextStyle(color: Color.fromARGB(255, 247, 0, 255)))
                   ])),
               SizedBox(
                 height: 200,

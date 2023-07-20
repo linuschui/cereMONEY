@@ -75,15 +75,17 @@ class ExpenseData extends ChangeNotifier {
     for (var expense in overallExpenseList) {
       String date = convertDateTimeToString(expense.dateTime);
       double amount = double.parse(expense.amount);
+      String amountPrecision = amount.toStringAsFixed(2);
+      double finalAmount = double.parse(amountPrecision);
       // if date already exists
       if (dailyExpenseSummary.containsKey(date)) {
         // get expense
         double currentAmount = dailyExpenseSummary[date]!;
-        currentAmount += amount;
+        currentAmount += finalAmount;
         dailyExpenseSummary[date] = currentAmount;
         // does not exist
       } else {
-        dailyExpenseSummary.addAll({date: amount});
+        dailyExpenseSummary.addAll({date: finalAmount});
       }
     }
     return dailyExpenseSummary;
