@@ -19,7 +19,7 @@ class HistoryTile extends StatelessWidget {
             extentRatio: 0.2,
             motion: const StretchMotion(),
             children: [
-              SlidableAction(onPressed: showTapped, icon: Icons.delete),
+              SlidableAction(onPressed: (p0) => {}, icon: Icons.delete),
             ]),
         child: ListTile(
           textColor: Colors.white,

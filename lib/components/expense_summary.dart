@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:money_manager/bar_graph/bar_graph.dart';
+import 'package:money_manager/graph_weekly/bar_graph.dart';
 import 'package:money_manager/data/expense_data.dart';
 import 'package:money_manager/datetime/datetime_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 class ExpenseSummary extends StatelessWidget {
   final DateTime startOfWeek;
@@ -20,7 +19,7 @@ class ExpenseSummary extends StatelessWidget {
       String friday,
       String saturday) {
     double? max = 100;
-    List<double> values = [
+    List<double> expenseValues = [
       value.calculateDailyExpenseSummary()[sunday] ?? 0,
       value.calculateDailyExpenseSummary()[monday] ?? 0,
       value.calculateDailyExpenseSummary()[tuesday] ?? 0,
@@ -29,8 +28,21 @@ class ExpenseSummary extends StatelessWidget {
       value.calculateDailyExpenseSummary()[friday] ?? 0,
       value.calculateDailyExpenseSummary()[saturday] ?? 0
     ];
-    values.sort();
-    max = values.last * 1.1;
+    List<double> savingsValues = [
+      value.calculateDailySavingsSummary()[sunday] ?? 0,
+      value.calculateDailySavingsSummary()[monday] ?? 0,
+      value.calculateDailySavingsSummary()[tuesday] ?? 0,
+      value.calculateDailySavingsSummary()[wednesday] ?? 0,
+      value.calculateDailySavingsSummary()[thursday] ?? 0,
+      value.calculateDailySavingsSummary()[friday] ?? 0,
+      value.calculateDailySavingsSummary()[saturday] ?? 0
+    ];
+    List<double> combinedValues = [];
+    for (int i = 0; i < 7; i++) {
+      combinedValues.add(expenseValues[i] + savingsValues[i]);
+    }
+    combinedValues.sort();
+    max = combinedValues.last * 1.1;
     return max == 0 ? 100 : max;
   }
 
@@ -89,29 +101,38 @@ class ExpenseSummary extends StatelessWidget {
                             color: Color.fromARGB(255, 247, 0, 255))),
                     Text(
                         '\$${calculateWeekTotal(value, sunday, monday, tuesday, wednesday, thursday, friday, saturday)}',
-                        style:
-                            TextStyle(color: Color.fromARGB(255, 247, 0, 255))),
+                        style: const TextStyle(
+                            color: Color.fromARGB(255, 247, 0, 255))),
                   ])),
               SizedBox(
                 height: 200,
                 child: MyBarGraph(
-                  maxY: calculateMax(value, sunday, monday, tuesday, wednesday,
-                      thursday, friday, saturday),
-                  sundayAmount:
-                      value.calculateDailyExpenseSummary()[sunday] ?? 0,
-                  mondayAmount:
-                      value.calculateDailyExpenseSummary()[monday] ?? 0,
-                  tuesdayAmount:
-                      value.calculateDailyExpenseSummary()[tuesday] ?? 0,
-                  wednesdayAmount:
-                      value.calculateDailyExpenseSummary()[wednesday] ?? 0,
-                  thursdayAmount:
-                      value.calculateDailyExpenseSummary()[thursday] ?? 0,
-                  fridayAmount:
-                      value.calculateDailyExpenseSummary()[friday] ?? 0,
-                  saturdayAmount:
-                      value.calculateDailyExpenseSummary()[saturday] ?? 0,
-                ),
+                    maxY: calculateMax(value, sunday, monday, tuesday,
+                        wednesday, thursday, friday, saturday),
+                    sundayAmount:
+                        value.calculateDailyExpenseSummary()[sunday] ?? 0,
+                    mondayAmount:
+                        value.calculateDailyExpenseSummary()[monday] ?? 0,
+                    tuesdayAmount:
+                        value.calculateDailyExpenseSummary()[tuesday] ?? 0,
+                    wednesdayAmount:
+                        value.calculateDailyExpenseSummary()[wednesday] ?? 0,
+                    thursdayAmount:
+                        value.calculateDailyExpenseSummary()[thursday] ?? 0,
+                    fridayAmount:
+                        value.calculateDailyExpenseSummary()[friday] ?? 0,
+                    saturdayAmount:
+                        value.calculateDailyExpenseSummary()[saturday] ?? 0,
+                    sundaySavings:
+                        value.calculateDailySavingsSummary()[sunday] ?? 0,
+                    mondaySavings:
+                        value.calculateDailySavingsSummary()[monday] ?? 0,
+                    tuesdaySavings:
+                        value.calculateDailySavingsSummary()[tuesday] ?? 0,
+                    wednesdaySavings: value.calculateDailySavingsSummary()[wednesday] ?? 0,
+                    thursdaySavings: value.calculateDailySavingsSummary()[thursday] ?? 0,
+                    fridaySavings: value.calculateDailySavingsSummary()[friday] ?? 0,
+                    saturdaySavings: value.calculateDailySavingsSummary()[saturday] ?? 0),
               ),
             ]));
   }

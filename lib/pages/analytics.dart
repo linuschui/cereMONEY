@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:money_manager/data/expense_data.dart';
-import 'package:money_manager/pages/addExpense.dart';
+import 'package:money_manager/pages/expense.dart';
 import 'package:money_manager/pages/history.dart';
-import 'package:money_manager/pages/home_page.dart';
+import 'package:money_manager/pages/home.dart';
 import 'package:provider/provider.dart';
 
 class AnalyticsPage extends StatefulWidget {
@@ -32,13 +32,13 @@ class _AnalyticsPage extends State<AnalyticsPage> {
       // Navigate to the Home with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(HomePage()),
+        pageTransitionBuilder(const HomePage()),
       );
     } else if (index == 1) {
       // Navigate to the HistoryPage with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(HistoryPage()),
+        pageTransitionBuilder(const HistoryPage()),
       );
     } else if (index == 2) {
       // Do nothing, already on the Analytics page.
@@ -46,7 +46,7 @@ class _AnalyticsPage extends State<AnalyticsPage> {
       // Navigate to the AddExpense Page with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(AddExpensePage()),
+        pageTransitionBuilder(const ExpensePage()),
       );
     }
   }

@@ -5,42 +5,84 @@ import 'package:money_manager/data/expense_data.dart';
 import 'package:money_manager/models/expense_item.dart';
 import 'package:money_manager/pages/analytics.dart';
 import 'package:money_manager/pages/history.dart';
-import 'package:money_manager/pages/home_page.dart';
+import 'package:money_manager/pages/home.dart';
 import 'package:provider/provider.dart';
 
-class AddExpensePage extends StatefulWidget {
-  const AddExpensePage({Key? key}) : super(key: key);
+class ExpensePage extends StatefulWidget {
+  const ExpensePage({Key? key}) : super(key: key);
   @override
-  _AddExpensePageState createState() => _AddExpensePageState();
+  _ExpensePageState createState() => _ExpensePageState();
 }
 
-class _AddExpensePageState extends State<AddExpensePage> {
+class _ExpensePageState extends State<ExpensePage> {
+  _ExpensePageState() {
+    selectedExpenseCategory = expenseCategories[0];
+  }
+
   @override
   void initState() {
     super.initState();
     // prepare data on startup
     Provider.of<ExpenseData>(context, listen: false).prepareData();
-  }
-
-  _AddExpensePageState() {
-    selectedExpenseCategory = expenseCategories[0];
+    newExpenseNameController.addListener(updateName);
+    newExpenseDollarsController.addListener(updateDollars);
   }
 
   List<String> expenseCategories = [
+    'SELECT A CATEGORY',
     'FOOD',
-    'CLOTHING',
+    'FASHION',
     'TRASNSPORTATION',
     'HEALTH',
     'TRAVEL',
     'PET',
     'RENT',
-    'MISCELLANEOUS'
+    'MISCELLANEOUS',
+    'SALARY',
+    'DEPOSITS',
+    'OTHER INCOME'
   ];
 
-  String? selectedExpenseCategory = ''; // Default category
+  String? selectedExpenseCategory = '';
+  var selectedExpenseName; // Default category
+  var selectedExpenseDollars;
+  TextEditingController newExpenseNameController = TextEditingController();
   TextEditingController newExpenseDollarsController = TextEditingController();
   TextEditingController newExpenseCentsController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool hasErrorCategory = false;
+  bool hasErrorName = false;
+  bool hasErrorDollars = false;
+
+  void updateName() {
+    setState(() {
+      selectedExpenseName = newExpenseNameController.text;
+    });
+  }
+
+  void updateDollars() {
+    setState(() {
+      selectedExpenseDollars = newExpenseDollarsController.text;
+    });
+  }
+
+  void validateCategoryInput(String value) {
+    setState(() {
+      hasErrorCategory = value == 'SELECT A CATEGORY';
+    });
+  }
+
+  void validateNameInput(String value) {
+    setState(() {
+      hasErrorName = value.isEmpty;
+    });
+  }
+
+  void validateDollarsInput(String value) {
+    setState(() {
+      hasErrorDollars = value.isEmpty;
+    });
+  }
 
   void save() {
     if (_formKey.currentState!.validate()) {
@@ -61,7 +103,8 @@ class _AddExpensePageState extends State<AddExpensePage> {
       double amountPrecision = double.parse(amount);
       String finalAmount = amountPrecision.toStringAsFixed(2);
       ExpenseItem newExpense = ExpenseItem(
-          name: selectedExpenseCategory!,
+          type: selectedExpenseCategory!,
+          name: selectedExpenseName!,
           amount: finalAmount,
           dateTime: DateTime.now());
       Provider.of<ExpenseData>(context, listen: false)
@@ -184,7 +227,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 padding: EdgeInsets.all(15.0),
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text('ADD AN EXPENSE',
+                  Text('ADD A TRANSACTION',
                       style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -198,6 +241,14 @@ class _AddExpensePageState extends State<AddExpensePage> {
                 child: Column(
                   children: [
                     DropdownButtonFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == 'SELECT A CATEGORY' || value == null) {
+                          return 'CHOOSE A CATEGORY';
+                        }
+                        return null;
+                      },
+                      menuMaxHeight: 500,
                       value: selectedExpenseCategory,
                       items: expenseCategories.map((String category) {
                         return DropdownMenuItem(
@@ -212,70 +263,185 @@ class _AddExpensePageState extends State<AddExpensePage> {
                           setState(() {
                             selectedExpenseCategory = newValue;
                           });
+                          validateNameInput(newValue);
                         }
                       },
-                      decoration: const InputDecoration(
-                        labelText: "TYPE OF EXPENSE",
+                      decoration: InputDecoration(
+                        labelText: "TYPE",
                         labelStyle: TextStyle(color: Colors.white),
                         prefixIcon: Icon(Icons.add_shopping_cart_rounded,
-                            color: Colors.white),
-                        enabledBorder: UnderlineInputBorder(
+                            color:
+                                selectedExpenseCategory != 'SELECT A CATEGORY'
+                                    ? Colors.green
+                                    : hasErrorCategory
+                                        ? Colors.red
+                                        : Colors.white),
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: selectedExpenseCategory !=
+                                        'SELECT A CATEGORY'
+                                    ? Colors.green
+                                    : hasErrorCategory
+                                        ? Colors.red
+                                        : Colors.white),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: selectedExpenseCategory !=
+                                        'SELECT A CATEGORY'
+                                    ? Colors.green
+                                    : hasErrorCategory
+                                        ? Colors.red
+                                        : Colors.white),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        errorBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Colors
-                                  .white), // Set underline border color to white
+                              color:
+                                  selectedExpenseCategory != 'SELECT A CATEGORY'
+                                      ? Colors.green
+                                      : hasErrorCategory
+                                          ? Colors.red
+                                          : Colors.white),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        focusedBorder: UnderlineInputBorder(
+                        focusedErrorBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Colors
-                                  .white), // Set focused underline border color to white
+                              color: hasErrorCategory
+                                  ? Colors.red
+                                  : selectedExpenseCategory !=
+                                          'SELECT A CATEGORY'
+                                      ? Colors.green
+                                      : Colors.white),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      icon: const Icon(Icons.arrow_drop_down_circle,
-                          color: Colors.white),
+                      icon: Icon(Icons.arrow_drop_down_circle,
+                          color: selectedExpenseCategory != 'SELECT A CATEGORY'
+                              ? Colors.green
+                              : hasErrorCategory
+                                  ? Colors.red
+                                  : Colors.white),
                       dropdownColor: Colors.black,
-                      style: const TextStyle(
-                          color:
-                              Colors.white), // Set dropdown text color to white
+                      style: const TextStyle(color: Colors.white),
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a value';
+                        if (value == null || value.isEmpty || hasErrorName) {
+                          return 'ENTER A NAME';
                         }
+                        return null;
+                      },
+                      controller: newExpenseNameController,
+                      style: const TextStyle(color: Colors.white),
+                      onChanged: validateNameInput,
+                      decoration: InputDecoration(
+                        labelText: 'NAME',
+                        labelStyle: const TextStyle(color: Colors.white),
+                        prefixIcon: Icon(Icons.abc_outlined,
+                            color:
+                                selectedExpenseCategory != 'SELECT A CATEGORY'
+                                    ? Colors.green
+                                    : hasErrorCategory
+                                        ? Colors.red
+                                        : Colors.white),
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: newExpenseNameController.text != ''
+                                    ? Colors.green
+                                    : hasErrorName
+                                        ? Colors.red
+                                        : Colors.white),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: newExpenseNameController.text != ''
+                                    ? Colors.green
+                                    : hasErrorName
+                                        ? Colors.red
+                                        : Colors.white),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        errorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: newExpenseNameController.text != ''
+                                  ? Colors.green
+                                  : hasErrorName
+                                      ? Colors.red
+                                      : Colors.white),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        focusedErrorBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: hasErrorName
+                                  ? Colors.red
+                                  : newExpenseNameController.text != ''
+                                      ? Colors.green
+                                      : Colors.white),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                            RegExp(r'[a-zA-Z0-9]')),
+                      ],
+                    ),
+                    // Text(newExpenseNameController.text,
+                    //     style: const TextStyle(color: Colors.white)),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null || value.isEmpty || hasErrorDollars) {
+                          return 'ENTER A VALUE';
+                        }
+                        return null;
                       },
                       controller: newExpenseDollarsController,
                       style: const TextStyle(color: Colors.white),
+                      onChanged: validateDollarsInput,
                       decoration: InputDecoration(
                         labelText: 'DOLLARS',
-                        border: const OutlineInputBorder(),
                         labelStyle: const TextStyle(color: Colors.white),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors.white), // Border color when focused
-                          borderRadius:
-                              BorderRadius.circular(10.0), // Rounded corners
-                        ),
+                        border: const OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.white)),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors
-                                  .white), // Border color when enabled but not focused
-                          borderRadius:
-                              BorderRadius.circular(10.0), // Rounded corners
-                        ),
+                            borderSide: BorderSide(
+                                color: newExpenseDollarsController.text != ''
+                                    ? Colors.green
+                                    : hasErrorDollars
+                                        ? Colors.red
+                                        : Colors.white),
+                            borderRadius: BorderRadius.circular(10.0)),
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: newExpenseDollarsController.text != ''
+                                    ? Colors.green
+                                    : hasErrorDollars
+                                        ? Colors.red
+                                        : Colors.white),
+                            borderRadius: BorderRadius.circular(10.0)),
                         errorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors
-                                  .red), // Border color when there's an error
-                          borderRadius:
-                              BorderRadius.circular(10.0), // Rounded corners
+                          borderSide: BorderSide(
+                              color: newExpenseDollarsController.text != ''
+                                  ? Colors.green
+                                  : hasErrorDollars
+                                      ? Colors.red
+                                      : Colors.white),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                         focusedErrorBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Colors
-                                  .red), // Border color when there's an error and focused
-                          borderRadius:
-                              BorderRadius.circular(10.0), // Rounded corners
+                          borderSide: BorderSide(
+                              color: hasErrorDollars
+                                  ? Colors.red
+                                  : newExpenseDollarsController.text != ''
+                                      ? Colors.green
+                                      : Colors.white),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
                       keyboardType: TextInputType.number,
@@ -284,7 +450,7 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         LengthLimitingTextInputFormatter(5),
                       ],
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: newExpenseCentsController,
                       keyboardType: TextInputType.number,
@@ -326,7 +492,19 @@ class _AddExpensePageState extends State<AddExpensePage> {
                         LengthLimitingTextInputFormatter(2),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 5),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '  DEFAULTS TO 0 CENTS',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    // const SizedBox(height: 10),
                     Column(
                       children: [
                         ElevatedButton(

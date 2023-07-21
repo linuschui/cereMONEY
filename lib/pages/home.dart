@@ -3,7 +3,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:money_manager/components/expense_summary.dart';
 import 'package:money_manager/data/expense_data.dart';
-import 'package:money_manager/pages/addExpense.dart';
+import 'package:money_manager/pages/expense.dart';
 import 'package:money_manager/pages/analytics.dart';
 import 'package:money_manager/pages/history.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +79,7 @@ class _HomePageState extends State<HomePage> {
       // Navigate to the Analytics with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(const AddExpensePage()),
+        pageTransitionBuilder(const ExpensePage()),
       );
     }
   }
@@ -153,6 +153,7 @@ class _HomePageState extends State<HomePage> {
                     const AlwaysScrollableScrollPhysics(), // Use AlwaysScrollableScrollPhysics for the ListView.builder
                 itemCount: value.getAllExpenseList().length,
                 itemBuilder: (context, index) => ExpenseTile(
+                  type: value.getAllExpenseList()[index].type,
                   name: value.getAllExpenseList()[index].name,
                   amount: value.getAllExpenseList()[index].amount,
                   dateTime: value.getAllExpenseList()[index].dateTime,
@@ -197,9 +198,8 @@ class _HomePageState extends State<HomePage> {
                 GButton(
                   icon: Icons.home,
                   text: ' HOME',
-                  backgroundColor: _selectedIndex == 0
-                      ? Colors.grey.shade800 // Use grey when selected
-                      : Colors.transparent,
+                  backgroundColor:
+                      Colors.grey.shade800, // Use grey when selected
                 ),
                 GButton(
                   icon: Icons.history_sharp,

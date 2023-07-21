@@ -12,6 +12,13 @@ class MyBarGraph extends StatelessWidget {
   final double thursdayAmount;
   final double fridayAmount;
   final double saturdayAmount;
+  final double mondaySavings;
+  final double tuesdaySavings;
+  final double wednesdaySavings;
+  final double thursdaySavings;
+  final double fridaySavings;
+  final double saturdaySavings;
+  final double sundaySavings;
 
   const MyBarGraph(
       {super.key,
@@ -22,24 +29,58 @@ class MyBarGraph extends StatelessWidget {
       required this.wednesdayAmount,
       required this.thursdayAmount,
       required this.fridayAmount,
-      required this.saturdayAmount});
+      required this.saturdayAmount,
+      required this.mondaySavings,
+      required this.tuesdaySavings,
+      required this.wednesdaySavings,
+      required this.thursdaySavings,
+      required this.fridaySavings,
+      required this.saturdaySavings,
+      required this.sundaySavings});
 
   @override
   Widget build(BuildContext context) {
     BarData myBarData = BarData(
-      sundayAmount: sundayAmount,
-      mondayAmount: mondayAmount,
-      tuesdayAmount: tuesdayAmount,
-      wednesdayAmount: wednesdayAmount,
-      thursdayAmount: thursdayAmount,
-      fridayAmount: fridayAmount,
-      saturdayAmount: saturdayAmount,
-    );
+        sundayAmount: sundayAmount,
+        mondayAmount: mondayAmount,
+        tuesdayAmount: tuesdayAmount,
+        wednesdayAmount: wednesdayAmount,
+        thursdayAmount: thursdayAmount,
+        fridayAmount: fridayAmount,
+        saturdayAmount: saturdayAmount,
+        sundaySavings: sundaySavings,
+        mondaySavings: mondaySavings,
+        tuesdaySavings: tuesdaySavings,
+        wednesdaySavings: wednesdaySavings,
+        thursdaySavings: thursdaySavings,
+        fridaySavings: fridaySavings,
+        saturdaySavings: saturdaySavings);
 
     myBarData.initialiseBarData();
 
+    List<double> expensesList = [
+      sundayAmount,
+      mondayAmount,
+      tuesdayAmount,
+      wednesdayAmount,
+      thursdayAmount,
+      fridayAmount,
+      saturdayAmount
+    ];
+
+    List<double> savingsList = [
+      mondaySavings,
+      tuesdaySavings,
+      wednesdaySavings,
+      thursdaySavings,
+      fridaySavings,
+      saturdaySavings,
+      sundaySavings,
+    ];
+
     return BarChart(BarChartData(
       maxY: maxY,
+      // barTouchData: BarTouchData(enabled: false),
       minY: 0,
       gridData: FlGridData(show: false),
       borderData: FlBorderData(show: false),
@@ -58,11 +99,16 @@ class MyBarGraph extends StatelessWidget {
               barRods: [
                 BarChartRodData(
                     toY: data.y,
-                    color: Color.fromARGB(255, 235, 156, 228),
+                    rodStackItems: [
+                      BarChartRodStackItem(0, data.y - savingsList[data.x],
+                          const Color.fromARGB(255, 247, 130, 241)),
+                      BarChartRodStackItem(data.y - savingsList[data.x], data.y,
+                          const Color.fromARGB(255, 182, 247, 182))
+                    ],
                     width: 25,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(25.0),
                     backDrawRodData: BackgroundBarChartRodData(
-                        show: true, toY: maxY, color: Colors.white))
+                        show: true, toY: maxY, color: Colors.black)),
               ],
             ),
           )
@@ -104,5 +150,5 @@ Widget getBottomTitles(double value, TitleMeta meta) {
       text = const Text('', style: style);
       break;
   }
-  return SideTitleWidget(child: text, axisSide: meta.axisSide);
+  return SideTitleWidget(axisSide: meta.axisSide, child: text);
 }

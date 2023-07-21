@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:money_manager/components/expense_tile.dart';
+import 'package:money_manager/graph_monthly/line_graph.dart';
 import 'package:money_manager/components/history_tile.dart';
 import 'package:money_manager/data/expense_data.dart';
-import 'package:money_manager/pages/addExpense.dart';
+import 'package:money_manager/pages/expense.dart';
 import 'package:money_manager/pages/analytics.dart';
-import 'package:money_manager/pages/home_page.dart';
+import 'package:money_manager/pages/home.dart';
 import 'package:provider/provider.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -34,7 +34,7 @@ class _HistoryPageState extends State<HistoryPage> {
       // Navigate to the Home with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(HomePage()),
+        pageTransitionBuilder(const HomePage()),
       );
     } else if (index == 1) {
       // Do nothing, already on the History page.
@@ -42,13 +42,13 @@ class _HistoryPageState extends State<HistoryPage> {
       // Navigate to the Analytics with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(AnalyticsPage()),
+        pageTransitionBuilder(const AnalyticsPage()),
       );
     } else if (index == 3) {
       // Navigate to the AddExpense Page with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(AddExpensePage()),
+        pageTransitionBuilder(const ExpensePage()),
       );
     }
   }
@@ -119,6 +119,7 @@ class _HistoryPageState extends State<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    selectedYear = selectedYear;
     return Consumer<ExpenseData>(
       builder: (context, value, child) => Scaffold(
         backgroundColor: Colors.black,
@@ -161,7 +162,6 @@ class _HistoryPageState extends State<HistoryPage> {
                         style: const TextStyle(color: Colors.white),
                         child: Text(year)));
               }).toList(),
-
               onChanged: (String? newValue) {
                 if (newValue != null) {
                   setState(() {
@@ -191,15 +191,20 @@ class _HistoryPageState extends State<HistoryPage> {
                   color: Colors.white), // Set dropdown text color to white
             ),
             Padding(
-                padding: EdgeInsets.all(15.0),
+                padding: const EdgeInsets.all(15.0),
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   Text('SELECTED YEAR : $selectedYear',
                       style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                           color: Color.fromARGB(255, 247, 0, 255))),
                 ])),
+            // MonthlyExpenseLineChart(monthlyExpenseSummaryByYear: value.calculateHistoryExpenseSummaryByYear(2023), year: '2023'),
+            HistoryGraph(
+                year: selectedYear.toString(),
+                yearlyData: value.calculateHistoryExpenseSummaryByYear(
+                    int.parse(selectedYear!))),
             Expanded(
               // Use Expanded to make the ListView.builder scrollable independently
               child: ListView.builder(

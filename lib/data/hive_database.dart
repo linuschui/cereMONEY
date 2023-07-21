@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import '../models/expense_item.dart';
 
 class HiveDataBase {
-  final _myBox = Hive.box("cereMONEY_database_v2");
+  final _myBox = Hive.box("cereMONEY_database_v3");
 
   // write data
   void saveData(List<ExpenseItem> allExpenses) {
@@ -11,6 +11,7 @@ class HiveDataBase {
     List<List<dynamic>> allExpensesFormatted = [];
     for (var expense in allExpenses) {
       List<dynamic> expenseFormatted = [
+        expense.type,
         expense.name,
         expense.amount,
         expense.dateTime
@@ -27,9 +28,10 @@ class HiveDataBase {
     List<ExpenseItem> allExpenses = [];
     for (int i = 0; i < savedExpenses.length; i++) {
       ExpenseItem expenseItem = ExpenseItem(
-          name: savedExpenses[i][0],
-          amount: savedExpenses[i][1],
-          dateTime: savedExpenses[i][2]);
+          type: savedExpenses[i][0],
+          name: savedExpenses[i][1],
+          amount: savedExpenses[i][2],
+          dateTime: savedExpenses[i][3]);
       allExpenses.add(expenseItem);
     }
     return allExpenses;

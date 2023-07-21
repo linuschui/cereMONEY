@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ExpenseTile extends StatelessWidget {
+  final String type;
   final String name;
   final String amount;
   final DateTime dateTime;
-  void Function(BuildContext)? deleteTapped;
+  final void Function(BuildContext)? deleteTapped;
 
   String dateTimeFormatter(DateTime dateTime) {
     String year = dateTime.toLocal().year.toString();
@@ -33,12 +34,18 @@ class ExpenseTile extends StatelessWidget {
     return newDateTime;
   }
 
-  ExpenseTile(
+  const ExpenseTile(
       {super.key,
+      required this.type,
       required this.name,
       required this.amount,
       required this.dateTime,
       required this.deleteTapped});
+
+  bool isSavings() {
+    List<String> savingTypes = ['SALARY', 'DEPOSITS', 'OTHER INCOME'];
+    return savingTypes.contains(type);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +57,12 @@ class ExpenseTile extends StatelessWidget {
               SlidableAction(onPressed: deleteTapped, icon: Icons.delete),
             ]),
         child: ListTile(
-          textColor: double.parse(amount) < 100 ? Colors.white : Colors.red,
-          title: Text(name),
+          textColor: isSavings()
+              ? Colors.green
+              : double.parse(amount) < 100
+                  ? Colors.white
+                  : Colors.red,
+          title: Text('$type : $name'),
           subtitle: Text(dateTimeFormatter(dateTime)),
           trailing: Text('\$$amount'),
         ));
