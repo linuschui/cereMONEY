@@ -78,7 +78,65 @@ class MyBarGraph extends StatelessWidget {
       sundaySavings,
     ];
 
+    bool isTouched = false;
+
     return BarChart(BarChartData(
+      barTouchData: BarTouchData(
+          touchTooltipData: BarTouchTooltipData(
+        tooltipBgColor: Colors.black,
+        tooltipBorder: const BorderSide(
+            color: Color.fromARGB(255, 247, 0, 255), width: 2.0),
+        tooltipRoundedRadius: 10,
+        tooltipMargin: 8.0,
+        fitInsideHorizontally: true,
+        fitInsideVertically: true,
+        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+          String weekday = '';
+          switch (group.x.toInt()) {
+            case 0:
+              weekday = 'SUNDAY';
+              break;
+            case 1:
+              weekday = 'MONDAY';
+              break;
+            case 2:
+              weekday = 'TUESDAY';
+              break;
+            case 3:
+              weekday = 'WEDNESDAY';
+              break;
+            case 4:
+              weekday = 'THURSDAY';
+              break;
+            case 5:
+              weekday = 'FRIDAY';
+              break;
+            case 6:
+              weekday = 'SATURDAY';
+              break;
+            default:
+              weekday = '';
+              break;
+          }
+          return BarTooltipItem(
+              // tooltip title
+              weekday,
+              const TextStyle(
+                  color: Color.fromARGB(255, 247, 0, 255),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12),
+              children: <TextSpan>[
+                TextSpan(
+                    // tooltip body
+                    text:
+                        '\nSAVED : \$${(savingsList[groupIndex]).toStringAsFixed(2)}\nSPENT : \$${(rod.toY - savingsList[groupIndex]).toStringAsFixed(2)}\nTOTAL : \$${rod.toY.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12))
+              ]);
+        },
+      )),
       maxY: maxY,
       // barTouchData: BarTouchData(enabled: false),
       minY: 0,
@@ -108,7 +166,11 @@ class MyBarGraph extends StatelessWidget {
                     width: 25,
                     borderRadius: BorderRadius.circular(25.0),
                     backDrawRodData: BackgroundBarChartRodData(
-                        show: true, toY: maxY, color: Colors.black)),
+                        show: true, toY: maxY, color: Colors.black),
+                    // TODO
+                    borderSide: isTouched
+                        ? const BorderSide(color: Colors.white)
+                        : const BorderSide(color: Colors.black, width: 4)),
               ],
             ),
           )
@@ -117,6 +179,7 @@ class MyBarGraph extends StatelessWidget {
   }
 }
 
+// x-axis labels
 Widget getBottomTitles(double value, TitleMeta meta) {
   const style = TextStyle(
     color: Color.fromARGB(255, 247, 0, 255),

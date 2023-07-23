@@ -4,9 +4,9 @@ import 'package:money_manager/data/expense_data.dart';
 import 'package:money_manager/datetime/datetime_helper.dart';
 import 'package:provider/provider.dart';
 
-class ExpenseSummary extends StatelessWidget {
+class WeeklySummary extends StatelessWidget {
   final DateTime startOfWeek;
-  const ExpenseSummary({super.key, required this.startOfWeek});
+  const WeeklySummary({super.key, required this.startOfWeek});
 
   // calculate max
   double calculateMax(

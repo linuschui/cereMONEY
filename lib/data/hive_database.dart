@@ -28,10 +28,10 @@ class HiveDataBase {
     List<ExpenseItem> allExpenses = [];
     for (int i = 0; i < savedExpenses.length; i++) {
       ExpenseItem expenseItem = ExpenseItem(
-          type: savedExpenses[i][0],
-          name: savedExpenses[i][1],
-          amount: savedExpenses[i][2],
-          dateTime: savedExpenses[i][3]);
+          type: savedExpenses[savedExpenses.length - i - 1][0],
+          name: savedExpenses[savedExpenses.length - i - 1][1],
+          amount: savedExpenses[savedExpenses.length - i - 1][2],
+          dateTime: savedExpenses[savedExpenses.length - i - 1][3]);
       allExpenses.add(expenseItem);
     }
     return allExpenses;

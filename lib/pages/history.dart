@@ -190,16 +190,16 @@ class _HistoryPageState extends State<HistoryPage> {
               style: const TextStyle(
                   color: Colors.white), // Set dropdown text color to white
             ),
-            Padding(
-                padding: const EdgeInsets.all(15.0),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text('SELECTED YEAR : $selectedYear',
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 247, 0, 255))),
-                ])),
+            // Padding(
+            //     padding: const EdgeInsets.all(15.0),
+            //     child:
+            //         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            //       Text('SELECTED YEAR : $selectedYear',
+            //           style: const TextStyle(
+            //               fontSize: 12,
+            //               fontWeight: FontWeight.bold,
+            //               color: Color.fromARGB(255, 247, 0, 255))),
+            //     ])),
             // MonthlyExpenseLineChart(monthlyExpenseSummaryByYear: value.calculateHistoryExpenseSummaryByYear(2023), year: '2023'),
             HistoryGraph(
                 year: selectedYear.toString(),

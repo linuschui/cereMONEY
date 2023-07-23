@@ -12,6 +12,7 @@ class HistoryGraph extends StatefulWidget {
 }
 
 class _HistoryGraph extends State<HistoryGraph> {
+  // helper function to calculate maximum
   double getMaximum() {
     double currMax = 0.0;
     for (var item in widget.yearlyData) {
@@ -22,6 +23,7 @@ class _HistoryGraph extends State<HistoryGraph> {
     return currMax;
   }
 
+  // helper function to calculate average
   double getAverage() {
     double currAverage = 0.0;
     for (var item in widget.yearlyData) {
@@ -30,7 +32,10 @@ class _HistoryGraph extends State<HistoryGraph> {
     return double.parse((currAverage / 12.0).toStringAsFixed(2));
   }
 
+  // boolean to show average or overall
   bool showAvg = false;
+
+  // initialise data for overall
   LineChartBarData getOverallData() {
     List<FlSpot> spots = [];
     for (var item in widget.yearlyData) {
@@ -53,6 +58,7 @@ class _HistoryGraph extends State<HistoryGraph> {
     );
   }
 
+  // initialise data for average
   LineChartBarData getAverageData() {
     List<FlSpot> spots = [];
     for (int i = 0; i < 12; i++) {
@@ -75,120 +81,51 @@ class _HistoryGraph extends State<HistoryGraph> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        AspectRatio(
-          aspectRatio: 1.5,
-          child: Padding(
-            padding: const EdgeInsets.only(
-              right: 25,
-              left: 25,
-              top: 10,
-              bottom: 10,
-            ),
-            child: LineChart(
-              showAvg ? avgData() : mainData(),
-            ),
-          ),
-        ),
-        Row(
-          children: [
-            SizedBox(
-              width: 100,
-              height: 40,
-              child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      showAvg = !showAvg;
-                    });
-                  },
-                  child: Text(
-                    'AVERAGE',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                      color: showAvg
-                          ? Colors.white.withOpacity(0.5)
-                          : Colors.white,
-                    ),
-                  )),
-            ),
-            SizedBox(
-              width: 60,
-              height: 40,
-              child: TextButton(
-                  onPressed: () {
-                    setState(() {
-                      showAvg = !showAvg;
-                    });
-                  },
-                  child: Text(
-                    '${getAverage()}',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: showAvg ? Colors.black : Colors.white,
-                    ),
-                  )),
-            ),
-          ],
-        ),
-      ],
-    );
+  // months helper
+  String getMonthName(int month) {
+    List<String> months = [
+      "JANUARY",
+      "FEBRUARY",
+      "MARCH",
+      "APRIL",
+      "MAY",
+      "JUNE",
+      "JULY",
+      "AUGUST",
+      "SEPTEMBER",
+      "OCTOBER",
+      "NOVEMBER",
+      "DECEMBER",
+    ];
+    return months[month];
   }
 
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-        fontWeight: FontWeight.bold, fontSize: 12, color: Colors.white);
-    Widget text;
-    switch (value.toInt()) {
-      case 2:
-        text = const Text('MAR', style: style);
-        break;
-      case 5:
-        text = const Text('JUN', style: style);
-        break;
-      case 8:
-        text = const Text('SEP', style: style);
-        break;
-      default:
-        text = const Text('', style: style);
-        break;
-    }
-
-    return SideTitleWidget(
-      axisSide: meta.axisSide,
-      child: text,
-    );
-  }
-
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Colors.white,
-      fontWeight: FontWeight.bold,
-      fontSize: 10,
-    );
-    String text;
-    switch (value.toInt()) {
-      case 1:
-        text = (getMaximum() * 1.1 / 5).toStringAsFixed(2);
-        break;
-      case 3:
-        text = (getMaximum() * 1.1 * 0.6).toStringAsFixed(2);
-        break;
-      case 5:
-        text = (getMaximum() * 1.1).toStringAsFixed(2);
-        break;
-      default:
-        return Container();
-    }
-
-    return Text(text, style: style, textAlign: TextAlign.center);
-  }
-
+  // initialise line chart for overall
   LineChartData mainData() {
     return LineChartData(
+      lineTouchData: LineTouchData(
+        touchTooltipData: LineTouchTooltipData(
+          tooltipBgColor: Colors.black,
+          tooltipBorder: const BorderSide(
+              color: Color.fromARGB(255, 247, 0, 255), width: 2.0),
+          tooltipRoundedRadius: 10,
+          tooltipMargin: 8.0,
+          fitInsideHorizontally: true,
+          fitInsideVertically: true,
+          getTooltipItems: (spots) {
+            return spots.map(
+              (touchedSpot) {
+                MonthlySummary currMonth =
+                    widget.yearlyData[touchedSpot.spotIndex];
+                return LineTooltipItem(
+                    '${getMonthName(touchedSpot.spotIndex)}\n\$${currMonth.amount.toStringAsFixed(2)}',
+                    const TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold));
+              },
+            ).toList();
+          }, // TO DO
+        ),
+      ),
       gridData: FlGridData(
         show: true,
         drawVerticalLine: true,
@@ -240,14 +177,41 @@ class _HistoryGraph extends State<HistoryGraph> {
       minX: 0,
       maxX: 11,
       minY: 0,
-      maxY: getMaximum() > 0 ? getMaximum() * 1.1 : 5,
+      maxY: getMaximum() > 0 ? getMaximum() * 1.1 : 6,
       lineBarsData: [getOverallData()],
     );
   }
 
+  // initialise line chart for average
   LineChartData avgData() {
     return LineChartData(
-      // lineTouchData: LineTouchData(enabled: false),
+      lineTouchData: LineTouchData(
+          touchTooltipData: LineTouchTooltipData(
+              tooltipBgColor: Colors.black,
+              tooltipBorder: const BorderSide(
+                  color: Color.fromARGB(255, 247, 0, 255), width: 2.0),
+              tooltipRoundedRadius: 10,
+              tooltipMargin: 8.0,
+              fitInsideHorizontally: true,
+              fitInsideVertically: true,
+              getTooltipItems: (spots) {
+                return spots.map((touchedSpot) {
+                  MonthlySummary currMonth =
+                      widget.yearlyData[touchedSpot.spotIndex];
+                  double currMonthAmount = currMonth.amount;
+                  double average = getAverage();
+                  double difference = currMonthAmount - average;
+                  double postiiveDifference = difference - 2 * difference;
+                  bool aboveAverage = difference > 0;
+                  return LineTooltipItem(
+                      aboveAverage
+                          ? '${getMonthName(touchedSpot.spotIndex)}\n+\$${difference.toStringAsFixed(2)}'
+                          : '${getMonthName(touchedSpot.spotIndex)}\n-\$${postiiveDifference.toStringAsFixed(2)}',
+                      TextStyle(
+                          color: aboveAverage ? Colors.red : Colors.green,
+                          fontWeight: FontWeight.bold));
+                }).toList();
+              })),
       gridData: FlGridData(
         show: true,
         drawHorizontalLine: true,
@@ -301,8 +265,126 @@ class _HistoryGraph extends State<HistoryGraph> {
       minX: 0,
       maxX: 11,
       minY: 0,
-      maxY: getMaximum() > 0 ? getMaximum() * 1.1 : 5,
+      maxY: getMaximum() > 0 ? getMaximum() * 1.1 : 6,
       lineBarsData: [getAverageData()],
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        AspectRatio(
+          aspectRatio: 1.5,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              right: 25,
+              left: 25,
+              top: 10,
+              bottom: 10,
+            ),
+            child: LineChart(
+              showAvg ? avgData() : mainData(),
+            ),
+          ),
+        ),
+        Row(
+          children: [
+            SizedBox(
+              width: 100,
+              height: 40,
+              child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      showAvg = !showAvg;
+                    });
+                  },
+                  child: Text(
+                    'AVERAGE',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: showAvg
+                          ? Colors.white
+                          : Colors.white.withOpacity(0.5),
+                    ),
+                  )),
+            ),
+            SizedBox(
+              width: 60,
+              height: 40,
+              child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      showAvg = showAvg;
+                    });
+                  },
+                  child: Text(
+                    '${getAverage()}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: showAvg
+                          ? const Color.fromARGB(255, 247, 0, 255)
+                          : Colors.black,
+                    ),
+                  )),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // x-axis labels : only shows March, June and September
+  Widget bottomTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 12,
+        color: Color.fromARGB(255, 247, 0, 255));
+    Widget text;
+    switch (value.toInt()) {
+      case 2:
+        text = const Text('MAR', style: style);
+        break;
+      case 5:
+        text = const Text('JUN', style: style);
+        break;
+      case 8:
+        text = const Text('SEP', style: style);
+        break;
+      default:
+        text = const Text('', style: style);
+        break;
+    }
+
+    return SideTitleWidget(
+      axisSide: meta.axisSide,
+      child: text,
+    );
+  }
+
+  // y axis labels (UNUSED)
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    const style = TextStyle(
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      fontSize: 10,
+    );
+    String text;
+    switch (value.toInt()) {
+      case 1:
+        text = (getMaximum() * 1.1 / 5).toStringAsFixed(2);
+        break;
+      case 3:
+        text = (getMaximum() * 1.1 * 0.6).toStringAsFixed(2);
+        break;
+      case 5:
+        text = (getMaximum() * 1.1).toStringAsFixed(2);
+        break;
+      default:
+        return Container();
+    }
+
+    return Text(text, style: style, textAlign: TextAlign.center);
   }
 }

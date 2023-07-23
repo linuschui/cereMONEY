@@ -4,9 +4,9 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class HistoryTile extends StatelessWidget {
   final String monthYear;
   final double amount;
-  void Function(BuildContext)? showTapped;
+  final void Function(BuildContext)? showTapped;
 
-  HistoryTile(
+  const HistoryTile(
       {super.key,
       required this.monthYear,
       required this.amount,
@@ -19,7 +19,7 @@ class HistoryTile extends StatelessWidget {
             extentRatio: 0.2,
             motion: const StretchMotion(),
             children: [
-              SlidableAction(onPressed: (p0) => {}, icon: Icons.delete),
+              SlidableAction(onPressed: (p0) => {}, icon: Icons.show_chart),
             ]),
         child: ListTile(
           textColor: Colors.white,

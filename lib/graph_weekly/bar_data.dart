@@ -43,13 +43,6 @@ class BarData {
       IndiviudalBar(x: 4, y: fridayAmount + fridaySavings),
       IndiviudalBar(x: 5, y: saturdayAmount + saturdaySavings),
       IndiviudalBar(x: 6, y: sundayAmount + sundaySavings),
-      // IndiviudalBar(x: 0, y: mondaySavings),
-      // IndiviudalBar(x: 1, y: tuesdaySavings),
-      // IndiviudalBar(x: 2, y: wednesdaySavings),
-      // IndiviudalBar(x: 3, y: thursdaySavings),
-      // IndiviudalBar(x: 4, y: fridaySavings),
-      // IndiviudalBar(x: 5, y: saturdaySavings),
-      // IndiviudalBar(x: 6, y: sundaySavings),
     ];
   }
 }

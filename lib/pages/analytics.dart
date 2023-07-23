@@ -21,29 +21,28 @@ class _AnalyticsPage extends State<AnalyticsPage> {
     Provider.of<ExpenseData>(context, listen: false).prepareData();
   }
 
+  // PAGE INDEX
   int _selectedIndex = 2;
 
+  // handle tab change
   void _onTabChange(int index) {
     setState(() {
       _selectedIndex = index;
     });
 
     if (index == 0) {
-      // Navigate to the Home with a smooth slide transition
       Navigator.push(
         context,
         pageTransitionBuilder(const HomePage()),
       );
     } else if (index == 1) {
-      // Navigate to the HistoryPage with a smooth slide transition
       Navigator.push(
         context,
         pageTransitionBuilder(const HistoryPage()),
       );
     } else if (index == 2) {
-      // Do nothing, already on the Analytics page.
+      // current page
     } else if (index == 3) {
-      // Navigate to the AddExpense Page with a smooth slide transition
       Navigator.push(
         context,
         pageTransitionBuilder(const ExpensePage()),

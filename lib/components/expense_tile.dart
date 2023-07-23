@@ -8,6 +8,7 @@ class ExpenseTile extends StatelessWidget {
   final DateTime dateTime;
   final void Function(BuildContext)? deleteTapped;
 
+// format the date time : [DD/MM/YYYY HH:MM:SS]
   String dateTimeFormatter(DateTime dateTime) {
     String year = dateTime.toLocal().year.toString();
     String month = dateTime.toLocal().month.toString();
@@ -30,7 +31,7 @@ class ExpenseTile extends StatelessWidget {
     if (second.length == 1) {
       second = '0$second';
     }
-    String newDateTime = '$year/$month/$day $hour:$minute:$second';
+    String newDateTime = '$day/$month/$year $hour:$minute:$second';
     return newDateTime;
   }
 
@@ -42,6 +43,7 @@ class ExpenseTile extends StatelessWidget {
       required this.dateTime,
       required this.deleteTapped});
 
+  // check if transaction type is savings
   bool isSavings() {
     List<String> savingTypes = ['SALARY', 'DEPOSITS', 'OTHER INCOME'];
     return savingTypes.contains(type);
@@ -49,6 +51,7 @@ class ExpenseTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // sliding animation
     return Slidable(
         endActionPane: ActionPane(
             extentRatio: 0.2,

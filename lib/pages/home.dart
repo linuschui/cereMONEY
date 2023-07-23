@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:intl/intl.dart';
-import 'package:money_manager/components/expense_summary.dart';
+import 'package:money_manager/components/weekly_summary.dart';
 import 'package:money_manager/data/expense_data.dart';
 import 'package:money_manager/pages/expense.dart';
 import 'package:money_manager/pages/analytics.dart';
@@ -133,7 +133,7 @@ class _HomePageState extends State<HomePage> {
           // Wrap the ExpenseSummary and ListView.builder in a Column
           children: [
             // expense summary
-            ExpenseSummary(startOfWeek: value.startOfWeekDate()),
+            WeeklySummary(startOfWeek: value.startOfWeekDate()),
             // expense list
             // const SizedBox(height: 20),
             const Padding(

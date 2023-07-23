@@ -26,6 +26,7 @@ class ExpenseData extends ChangeNotifier {
   // add new expense
   void addNewExpense(ExpenseItem newExpenseItem) {
     overallExpenseList.add(newExpenseItem);
+    overallExpenseList.sort((a, b) => a.dateTime.compareTo(b.dateTime));
     notifyListeners();
     db.saveData(overallExpenseList);
   }

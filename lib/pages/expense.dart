@@ -268,7 +268,7 @@ class _ExpensePageState extends State<ExpensePage> {
                       },
                       decoration: InputDecoration(
                         labelText: "TYPE",
-                        labelStyle: TextStyle(color: Colors.white),
+                        labelStyle: const TextStyle(color: Colors.white),
                         prefixIcon: Icon(Icons.add_shopping_cart_rounded,
                             color:
                                 selectedExpenseCategory != 'SELECT A CATEGORY'
@@ -342,12 +342,11 @@ class _ExpensePageState extends State<ExpensePage> {
                         labelText: 'NAME',
                         labelStyle: const TextStyle(color: Colors.white),
                         prefixIcon: Icon(Icons.abc_outlined,
-                            color:
-                                selectedExpenseCategory != 'SELECT A CATEGORY'
-                                    ? Colors.green
-                                    : hasErrorCategory
-                                        ? Colors.red
-                                        : Colors.white),
+                            color: newExpenseNameController.text != ''
+                                ? Colors.green
+                                : hasErrorName
+                                    ? Colors.red
+                                    : Colors.white),
                         border: const OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.white)),
                         enabledBorder: OutlineInputBorder(
