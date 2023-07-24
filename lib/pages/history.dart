@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:money_manager/graph_monthly/line_graph.dart';
-import 'package:money_manager/components/history_tile.dart';
-import 'package:money_manager/data/expense_data.dart';
-import 'package:money_manager/pages/expense.dart';
-import 'package:money_manager/pages/analytics.dart';
-import 'package:money_manager/pages/home.dart';
+import 'package:ceremoney/graph_yearly/line_graph.dart';
+import 'package:ceremoney/components/history_tile.dart';
+import 'package:ceremoney/data/expense_data.dart';
+import 'package:ceremoney/pages/transaction.dart';
+import 'package:ceremoney/pages/analytics.dart';
+import 'package:ceremoney/pages/home.dart';
 import 'package:provider/provider.dart';
 
 class HistoryPage extends StatefulWidget {
@@ -23,6 +23,13 @@ class _HistoryPageState extends State<HistoryPage> {
     Provider.of<ExpenseData>(context, listen: false).prepareData();
   }
 
+  void onTapped(String yearMonth) {
+    Navigator.push(
+      context,
+      pageTransitionBuilder(const AnalyticsPage()),
+    );
+  }
+
   int _selectedIndex = 1;
 
   void _onTabChange(int index) {
@@ -31,24 +38,21 @@ class _HistoryPageState extends State<HistoryPage> {
     });
 
     if (index == 0) {
-      // Navigate to the Home with a smooth slide transition
       Navigator.push(
         context,
         pageTransitionBuilder(const HomePage()),
       );
     } else if (index == 1) {
-      // Do nothing, already on the History page.
+      // current page
     } else if (index == 2) {
-      // Navigate to the Analytics with a smooth slide transition
       Navigator.push(
         context,
         pageTransitionBuilder(const AnalyticsPage()),
       );
     } else if (index == 3) {
-      // Navigate to the AddExpense Page with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(const ExpensePage()),
+        pageTransitionBuilder(const TransactionPage()),
       );
     }
   }
@@ -108,14 +112,13 @@ class _HistoryPageState extends State<HistoryPage> {
     '2029',
     '2030',
   ];
+
   // default
   String? selectedYear = '2023';
 
   _HistoryPageState() {
     selectedYear = yearList[23];
   }
-
-  void handleSelectYear() {}
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +136,10 @@ class _HistoryPageState extends State<HistoryPage> {
               IconButton(
                 icon: const Icon(Icons.monetization_on),
                 onPressed: () {
-                  // Add the onPressed action here, e.g., open a drawer
+                  Navigator.push(
+                    context,
+                    pageTransitionBuilder(const TransactionPage()),
+                  );
                 },
               ),
             ],
@@ -200,7 +206,6 @@ class _HistoryPageState extends State<HistoryPage> {
             //               fontWeight: FontWeight.bold,
             //               color: Color.fromARGB(255, 247, 0, 255))),
             //     ])),
-            // MonthlyExpenseLineChart(monthlyExpenseSummaryByYear: value.calculateHistoryExpenseSummaryByYear(2023), year: '2023'),
             HistoryGraph(
                 year: selectedYear.toString(),
                 yearlyData: value.calculateHistoryExpenseSummaryByYear(
@@ -221,7 +226,10 @@ class _HistoryPageState extends State<HistoryPage> {
                       .calculateHistoryExpenseSummary()
                       .values
                       .elementAt(index),
-                  showTapped: (p0) => (),
+                  onTapped: (p0) => onTapped(value
+                      .calculateHistoryExpenseSummary()
+                      .keys
+                      .elementAt(index)),
                 ),
               ),
             ),

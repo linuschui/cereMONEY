@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:money_manager/graph_weekly/bar_graph.dart';
-import 'package:money_manager/data/expense_data.dart';
-import 'package:money_manager/datetime/datetime_helper.dart';
+import 'package:ceremoney/graph_weekly/bar_graph.dart';
+import 'package:ceremoney/data/expense_data.dart';
+import 'package:ceremoney/datetime/datetime_helper.dart';
 import 'package:provider/provider.dart';
 
 class WeeklySummary extends StatelessWidget {

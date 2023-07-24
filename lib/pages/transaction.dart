@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:money_manager/data/expense_data.dart';
-import 'package:money_manager/models/expense_item.dart';
-import 'package:money_manager/pages/analytics.dart';
-import 'package:money_manager/pages/history.dart';
-import 'package:money_manager/pages/home.dart';
+import 'package:ceremoney/data/expense_data.dart';
+import 'package:ceremoney/models/expense_item.dart';
+import 'package:ceremoney/pages/analytics.dart';
+import 'package:ceremoney/pages/history.dart';
+import 'package:ceremoney/pages/home.dart';
 import 'package:provider/provider.dart';
 
-class ExpensePage extends StatefulWidget {
-  const ExpensePage({Key? key}) : super(key: key);
+class TransactionPage extends StatefulWidget {
+  const TransactionPage({Key? key}) : super(key: key);
   @override
-  _ExpensePageState createState() => _ExpensePageState();
+  _TransactionPageState createState() => _TransactionPageState();
 }
 
-class _ExpensePageState extends State<ExpensePage> {
-  _ExpensePageState() {
+class _TransactionPageState extends State<TransactionPage> {
+  _TransactionPageState() {
     selectedExpenseCategory = expenseCategories[0];
   }
 
@@ -32,8 +32,8 @@ class _ExpensePageState extends State<ExpensePage> {
     'SELECT A CATEGORY',
     'FOOD',
     'FASHION',
-    'TRASNSPORTATION',
-    'HEALTH',
+    'TRASNSPORT',
+    'HEALTHCARE',
     'TRAVEL',
     'PET',
     'RENT',
@@ -44,7 +44,7 @@ class _ExpensePageState extends State<ExpensePage> {
   ];
 
   String? selectedExpenseCategory = '';
-  var selectedExpenseName; // Default category
+  var selectedExpenseName;
   var selectedExpenseDollars;
   TextEditingController newExpenseNameController = TextEditingController();
   TextEditingController newExpenseDollarsController = TextEditingController();
@@ -156,26 +156,21 @@ class _ExpensePageState extends State<ExpensePage> {
     });
 
     if (index == 0) {
-      // Navigate to the Home with a smooth slide transition
       Navigator.push(
         context,
         pageTransitionBuilder(const HomePage()),
       );
     } else if (index == 1) {
-      // Do nothing, already on the History page.
       Navigator.push(
         context,
         pageTransitionBuilder(const HistoryPage()),
       );
     } else if (index == 2) {
-      // Navigate to the Analytics with a smooth slide transition
       Navigator.push(
         context,
         pageTransitionBuilder(const AnalyticsPage()),
       );
-    } else if (index == 3) {
-      // Do nothing, already on the History page.
-    }
+    } else if (index == 3) {}
   }
 
   PageRouteBuilder pageTransitionBuilder(Widget page) {

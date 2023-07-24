@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:money_manager/components/monthly_summary.dart';
+import 'package:ceremoney/components/monthly_summary.dart';
 
 class HistoryGraph extends StatefulWidget {
   const HistoryGraph({super.key, required this.year, required this.yearlyData});
@@ -49,7 +49,7 @@ class _HistoryGraph extends State<HistoryGraph> {
       isCurved: false,
       barWidth: 5,
       isStrokeCapRound: true,
-      dotData: FlDotData(
+      dotData: const FlDotData(
         show: false,
       ),
       belowBarData: BarAreaData(
@@ -72,7 +72,7 @@ class _HistoryGraph extends State<HistoryGraph> {
       isCurved: true,
       barWidth: 5,
       isStrokeCapRound: true,
-      dotData: FlDotData(
+      dotData: const FlDotData(
         show: false,
       ),
       belowBarData: BarAreaData(
@@ -132,13 +132,13 @@ class _HistoryGraph extends State<HistoryGraph> {
         horizontalInterval: getMaximum() / 5 > 0 ? getMaximum() / 5 : 1,
         verticalInterval: 1,
         getDrawingHorizontalLine: (value) {
-          return FlLine(
+          return const FlLine(
             color: Colors.white,
             strokeWidth: 1,
           );
         },
         getDrawingVerticalLine: (value) {
-          return FlLine(
+          return const FlLine(
             color: Colors.white,
             strokeWidth: 1,
           );
@@ -146,10 +146,10 @@ class _HistoryGraph extends State<HistoryGraph> {
       ),
       titlesData: FlTitlesData(
         show: true,
-        rightTitles: AxisTitles(
+        rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        topTitles: AxisTitles(
+        topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
         bottomTitles: AxisTitles(
@@ -160,7 +160,7 @@ class _HistoryGraph extends State<HistoryGraph> {
             getTitlesWidget: bottomTitleWidgets,
           ),
         ),
-        leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
         // leftTitles: AxisTitles(
         //   sideTitles: SideTitles(
         //     showTitles: true,
@@ -218,13 +218,13 @@ class _HistoryGraph extends State<HistoryGraph> {
         verticalInterval: 1,
         horizontalInterval: getMaximum() / 5 > 0 ? getMaximum() / 5 : 1,
         getDrawingVerticalLine: (value) {
-          return FlLine(
+          return const FlLine(
             color: Colors.white,
             strokeWidth: 1,
           );
         },
         getDrawingHorizontalLine: (value) {
-          return FlLine(
+          return const FlLine(
             color: Colors.white,
             strokeWidth: 1,
           );
@@ -240,7 +240,7 @@ class _HistoryGraph extends State<HistoryGraph> {
             interval: 1,
           ),
         ),
-        leftTitles: AxisTitles(
+        leftTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
         // leftTitles: AxisTitles(
@@ -251,10 +251,10 @@ class _HistoryGraph extends State<HistoryGraph> {
         //     interval: 1,
         //   ),
         // ),
-        topTitles: AxisTitles(
+        topTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        rightTitles: AxisTitles(
+        rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
       ),

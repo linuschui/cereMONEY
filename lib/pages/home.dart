@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:intl/intl.dart';
-import 'package:money_manager/components/weekly_summary.dart';
-import 'package:money_manager/data/expense_data.dart';
-import 'package:money_manager/pages/expense.dart';
-import 'package:money_manager/pages/analytics.dart';
-import 'package:money_manager/pages/history.dart';
+import 'package:ceremoney/components/weekly_summary.dart';
+import 'package:ceremoney/data/expense_data.dart';
+import 'package:ceremoney/pages/transaction.dart';
+import 'package:ceremoney/pages/analytics.dart';
+import 'package:ceremoney/pages/history.dart';
 import 'package:provider/provider.dart';
 
 import '../components/expense_tile.dart';
@@ -70,7 +70,6 @@ class _HomePageState extends State<HomePage> {
         pageTransitionBuilder(const HistoryPage()),
       );
     } else if (index == 2) {
-      // Add new expense : do nothing, already handled by navbar
       Navigator.push(
         context,
         pageTransitionBuilder(const AnalyticsPage()),
@@ -79,7 +78,7 @@ class _HomePageState extends State<HomePage> {
       // Navigate to the Analytics with a smooth slide transition
       Navigator.push(
         context,
-        pageTransitionBuilder(const ExpensePage()),
+        pageTransitionBuilder(const TransactionPage()),
       );
     }
   }
@@ -122,7 +121,10 @@ class _HomePageState extends State<HomePage> {
                   Icons.monetization_on,
                 ),
                 onPressed: () {
-                  // Add the onPressed action here, e.g., open a drawer
+                  Navigator.push(
+                    context,
+                    pageTransitionBuilder(const TransactionPage()),
+                  );
                 },
               ),
             ],

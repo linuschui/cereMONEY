@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:money_manager/data/expense_data.dart';
-import 'package:money_manager/pages/home.dart';
+import 'package:ceremoney/data/expense_data.dart';
+import 'package:ceremoney/pages/home.dart';
 import 'package:provider/provider.dart';
 
 void main() async {

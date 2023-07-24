@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:money_manager/components/monthly_summary.dart';
-import 'package:money_manager/data/hive_database.dart';
-import 'package:money_manager/datetime/datetime_helper.dart';
-import 'package:money_manager/models/expense_item.dart';
+import 'package:ceremoney/components/category_summary.dart';
+import 'package:ceremoney/components/monthly_summary.dart';
+import 'package:ceremoney/data/hive_database.dart';
+import 'package:ceremoney/datetime/datetime_helper.dart';
+import 'package:ceremoney/models/expense_item.dart';
 
 class ExpenseData extends ChangeNotifier {
   // list of all expenses
@@ -59,6 +60,20 @@ class ExpenseData extends ChangeNotifier {
         return '';
     }
   }
+
+  List<String> categories = [
+    'FOOD',
+    'FASHION',
+    'TRASNSPORT',
+    'HEALTHCARE',
+    'TRAVEL',
+    'PET',
+    'RENT',
+    'MISCELLANEOUS',
+    'SALARY',
+    'DEPOSITS',
+    'OTHER INCOME'
+  ];
 
   // get date for start of the week (Sunday)
   DateTime startOfWeekDate() {
@@ -181,5 +196,45 @@ class ExpenseData extends ChangeNotifier {
       }
     }
     return monthlyExpenseSummaryByYear;
+  }
+
+  List<CategorySummary> calculateCategoryExpenseSummaryByMonth(
+      String yearMonth) {
+    int month = int.parse(yearMonth.split('/')[0]);
+    int year = int.parse(yearMonth.split('/')[1]);
+    List<CategorySummary> categoryExpenseSummaryByMonth = [];
+    // initialise all to 0
+    for (int i = 0; i < categories.length; i++) {
+      categoryExpenseSummaryByMonth.add(CategorySummary(categories[i], 0));
+    }
+    // add the rest
+    for (var expense in overallExpenseList) {
+      // correct year and month
+      if (year == expense.dateTime.year && month == expense.dateTime.month) {
+        double amount = double.parse(expense.amount);
+        String amountPrecision = amount.toStringAsFixed(2);
+        double newAmount = double.parse(amountPrecision);
+        bool foundCategory = false;
+        // correct category
+        for (var category in categoryExpenseSummaryByMonth) {
+          if (expense.type == category.type) {
+            category.amount += newAmount;
+            foundCategory = true;
+            break;
+          }
+        }
+      }
+    }
+    return categoryExpenseSummaryByMonth;
+  }
+
+  String calculateTotalExpenditureByMonth(String yearMonth) {
+    List<CategorySummary> categorySummary =
+        calculateCategoryExpenseSummaryByMonth(yearMonth);
+    double currAmount = 0;
+    for (var category in categorySummary) {
+      currAmount += category.amount;
+    }
+    return '\$${currAmount.toStringAsFixed(2)}';
   }
 }

@@ -1,4 +1,4 @@
-import 'package:money_manager/graph_weekly/individual_bar.dart';
+import 'package:ceremoney/graph_weekly/individual_bar.dart';
 
 class BarData {
   final double mondayAmount;
